@@ -38,9 +38,10 @@ class NetworkUtils(object):
             vswitches = self._conn.Msvm_VirtualSwitch(ElementName=vswitch_name)
         else:
             # Find the vswitch that is connected to the first physical nic.
-            ext_port = self._conn.Msvm_ExternalEthernetPort(IsBound='TRUE')[0]
-            port = ext_port.associators(wmi_result_class='Msvm_SwitchPort')[0]
-            vswitches = port.associators(wmi_result_class='Msvm_VirtualSwitch')
+            vswitches = self._conn.Msvm_ExternalEthernetPort(IsBound='TRUE')[0]\
+            .associators(wmi_result_class='Msvm_SwitchLANEndpoint')[0]\
+            .associators(wmi_result_class='Msvm_SwitchPort')[0]\
+            .associators(wmi_result_class='Msvm_VirtualSwitch')
 
         if not len(vswitches):
             raise vmutils.HyperVException(_('vswitch "%s" not found')
